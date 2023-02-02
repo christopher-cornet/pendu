@@ -1,14 +1,23 @@
 import pygame
 
-window = pygame.display.set_mode((700, 500))
-pygame.display.set_caption("Pendu")
 pygame.init()
+window = pygame.display.set_mode((700, 500))
+center = window.get_rect().center
+background_img = pygame.image.load("pendu/hangman.png")
+surface = window
+color = (100,149,237)
 
 # Créer un menu: le joueur choisit s'il veut jouer ou insérer un mot dans le fichier mots.txt.
 def menu():
-    surface.fill(color)
-    pygame.display.flip()
     # Bouton jouer, Bouton ajouter un mot, Bouton difficulté
+    pygame.display.set_caption("Menu")
+    bouton_play = pygame.image.load("pendu/bouton-difficulty.png")
+    window.blit(bouton_play, (40, 120))
+    bouton_play = pygame.image.load("pendu/bouton-play.png")
+    window.blit(bouton_play, (40, 200))
+    bouton_play = pygame.image.load("pendu/bouton-add.png")
+    window.blit(bouton_play, (40, 280))
+    pygame.display.flip()
     
     # Si menu = jouer
     # play()
@@ -20,10 +29,13 @@ def menu():
 
 def play():
     # Si menu = jouer
+    # play()
     # Remplacer le _ par la lettre découverte
     pass
 
 def addWord():
+    # Si menu = ajouter
+    # addWord()
     # Ouvrir fichier mots.txt
     # Ecrire l'input
     # Fermer
@@ -73,11 +85,13 @@ def scoreboard():
 
 running = True
 
-surface = window
-color = (100,149,237)
+window.fill((0, 0, 0))
+window.blit(background_img, (0, 0))
+
+menu()
+pygame.display.update()
 
 while running:
-    menu()
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
