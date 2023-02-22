@@ -1,109 +1,123 @@
-import pygame
-import sys
+import pygame, sys
+from pygame.locals import *
 
-pygame.init()
-FPS = 60
 CLOCK = pygame.time.Clock()
+FPS = 60
+pygame.init()
+pygame.display.set_caption('game base')
 WIDTH, HEIGHT = 640, 480
 SCREEN = pygame.display.set_mode((WIDTH, HEIGHT))
-pygame.display.set_caption("Menu")
+ 
+font = pygame.font.SysFont("Impact", 40)
+ 
+def draw_text(text, font, color, surface, x, y):
+    textobj = font.render(text, 1, color)
+    textrect = textobj.get_rect()
+    textrect.topleft = (x, y)
+    surface.blit(textobj, textrect)
 
-FONT = pygame.font.SysFont("Times New Romans", 40)
+click = False
 
-PLAYBGCOLOR = (0, 255, 0)
+def main_screen():
+    while True:
+        # Fond noir
+        SCREEN.fill((40,40,40))
+        pygame.display.set_caption("Hangman Game")
+        draw_text('Hangman Game', font, (255, 255, 255), SCREEN, 195, 50)
+        # Coordonnées souris
+        mouse_x, mouse_y = pygame.mouse.get_pos()
+ 
+        # Boutons
+        button_1 = pygame.Rect(225, 150, 200, 70)
+        button_2 = pygame.Rect(225, 250, 200, 70)
+        button_3 = pygame.Rect(225, 350, 200, 70)
 
-objects = []
+        # Cliquer sur un bouton = ouvre une fenêtre
+        if button_1.collidepoint((mouse_x, mouse_y)):
+            if click:
+                hangman_game()
+        if button_2.collidepoint((mouse_x, mouse_y)):
+            if click:
+                add_words()
+        if button_3.collidepoint((mouse_x, mouse_y)):
+            if click:
+                difficulty()
 
-class Button():
-    def __init__(self, x, y, width, height, buttonText="Button", onclick=None, onePress=False):
-        self.x = x
-        self.y = y
-        self.width = width
-        self.height = height
-        self.onclick = onclick
-        self.onePress = onePress
-
-        self.fillColors = {
-            "normal": "#1285F2",
-            "hover": "#124FF2",
-            "pressed": "#101AEF",
-        }
-
-        self.buttonSurface = pygame.Surface((self.width, self.height))
-        self.buttonRect = pygame.Rect(self.x, self.y, self.width, self.height)
-        # Couleur du texte
-        self.buttonSurf = FONT.render(buttonText, True, (255, 255, 255))
-
-        self.alreadyPressed = False
-
-        objects.append(self)
-
-    def process(self):
-        mouse_position = pygame.mouse.get_pos()
-        
-        self.buttonSurface.fill(self.fillColors["normal"])
-        if self.buttonRect.collidepoint(mouse_position):
-            self.buttonSurface.fill(self.fillColors["hover"])
-            if pygame.mouse.get_pressed(num_buttons=3)[0]:
-                self.buttonSurface.fill(self.fillColors["pressed"])
-                if self.onePress:
-                    self.onclick()
-                elif not self.alreadyPressed:
-                    self.onclick()
-                    self.alreadyPressed = True
-            else:
-                self.alreadyPressed = False
-
-        self.buttonSurface.blit(self.buttonSurf, [
-            self.buttonRect.width/2 - self.buttonSurf.get_rect().width/2,
-            self.buttonRect.height/2 - self.buttonSurf.get_rect().height/2
-        ])
-        SCREEN.blit(self.buttonSurface, self.buttonRect)
-
-def play():
-        Play()
-        print("Fenêtre de jeu")
-        return True
-
-def addwords():
-    AddWords()
-    print("Fenêtre d'ajout de mots")
-
-def difficulty():
-    Difficulty()
-    print("Fenêtre de difficulté")
-
-class MainScreen():
-    def __init__(self):
-        button_play = Button(200, 70, 250, 100, "Jouer", play)
-        button_add_words = Button(200, 180, 250, 100, "Ajouter des mots", addwords)
-        button_difficulty = Button(200, 290, 250, 100, "Difficulté", difficulty)
-
-class Play():
-    def __init__(self):
-        SCREEN.fill(PLAYBGCOLOR)
+        # Print les boutons
+        pygame.draw.rect(SCREEN, (112, 212, 72), button_1)
+        pygame.draw.rect(SCREEN, (85, 134, 255), button_2)
+        pygame.draw.rect(SCREEN, (255, 0, 0), button_3)
+        draw_text('Play', font, (255, 255, 255), SCREEN, 290, 160)
+        draw_text('Add words', font, (255, 255, 255), SCREEN, 240, 260)
+        draw_text('Difficulty', font, (255, 255, 255), SCREEN, 250, 360)
+ 
+        click = False
+        for event in pygame.event.get():
+            if event.type == QUIT:
+                pygame.quit()
+                sys.exit()
+            if event.type == KEYDOWN:
+                # Echap = quitte le jeu
+                if event.key == K_ESCAPE:
+                    pygame.quit()
+                    sys.exit()
+            if event.type == MOUSEBUTTONDOWN:
+                # Si clic souris alors click = True
+                if event.button == 1:
+                    click = True
+ 
         pygame.display.update()
+        CLOCK.tick(FPS)
 
-class AddWords():
-    def __init__(self):
-        SCREEN.fill((10,40,50))
-        pygame.display.flip()
-
-class Difficulty():
-    def __init__(self):
-        SCREEN.fill((255, 46, 46))
-        pygame.display.flip()
-
-MainScreen()
-
-while True:
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-            pygame.quit()
-            sys.exit()
-
-    for object in objects:
-        object.process()
-
-    pygame.display.flip()
-    CLOCK.tick(FPS)
+def hangman_game():
+    running = True
+    while running:
+        SCREEN.fill((0,0,0))
+        
+        draw_text('Play', font, (255, 255, 255), SCREEN, 20, 20)
+        for event in pygame.event.get():
+            if event.type == QUIT:
+                pygame.quit()
+                sys.exit()
+            if event.type == KEYDOWN:
+                if event.key == K_ESCAPE:
+                    running = False
+        
+        pygame.display.update()
+        CLOCK.tick(FPS)
+ 
+def add_words():
+    running = True
+    while running:
+        SCREEN.fill((0,0,0))
+        
+        draw_text('Add words', font, (255, 255, 255), SCREEN, 20, 20)
+        for event in pygame.event.get():
+            if event.type == QUIT:
+                pygame.quit()
+                sys.exit()
+            if event.type == KEYDOWN:
+                if event.key == K_ESCAPE:
+                    running = False
+        
+        pygame.display.update()
+        CLOCK.tick(FPS)
+ 
+def difficulty():
+    running = True
+    while running:
+        SCREEN.fill((0,0,0))
+ 
+        draw_text('Difficulté', font, (255, 255, 255), SCREEN, 20, 20)
+        for event in pygame.event.get():
+            if event.type == QUIT:
+                pygame.quit()
+                sys.exit()
+            if event.type == KEYDOWN:
+                if event.key == K_ESCAPE:
+                    running = False
+        
+        pygame.display.update()
+        CLOCK.tick(FPS)
+ 
+main_screen()
