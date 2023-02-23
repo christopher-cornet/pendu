@@ -10,7 +10,8 @@ WIDTH, HEIGHT = 640, 480
 SCREEN = pygame.display.set_mode((WIDTH, HEIGHT))
  
 font = pygame.font.SysFont("Impact", 40)
- 
+
+# Créer un texte et le styliser
 def draw_text(text, font, color, surface, x, y):
     textobj = font.render(text, 1, color)
     textrect = textobj.get_rect()
@@ -73,14 +74,14 @@ def main_screen():
 # Le pendu
 def hangman_game():
     click = False
-    # Mettre le mot 
+    # Mettre le mot en tiret
     test = "key"
     for i in test:
-        print('_')
+        print('_', end='')
 
-    # Choisir un mot dans le fichier texte
+    # Choisir un mot au hasard dans le fichier texte
     with open("pendu/mots.txt", "r") as file:
-        word = print(file.readlines()[random.randint(0, 10)])
+        word = file.readlines()[random.randint(0, 10)]
         print_word = str(word)
 
     running = True
@@ -89,7 +90,7 @@ def hangman_game():
         SCREEN.fill((40,40,40))
         pygame.display.set_caption('Hangman Game')
         draw_text('Hangman Game', font, (255, 255, 255), SCREEN, 195, 50)
-        draw_text(print_word, font, (255, 255, 255), SCREEN, 280, 150)
+        draw_text(print_word, font, (255, 255, 255), SCREEN, 100, 150)
         # Coordonnées souris
         mouse_x, mouse_y = pygame.mouse.get_pos()
     
