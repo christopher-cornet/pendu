@@ -1,5 +1,6 @@
 import pygame, sys
 from pygame.locals import *
+import random
 
 CLOCK = pygame.time.Clock()
 FPS = 60
@@ -72,12 +73,23 @@ def main_screen():
 # Le pendu
 def hangman_game():
     click = False
+    # Mettre le mot 
+    test = "key"
+    for i in test:
+        print('_')
+
+    # Choisir un mot dans le fichier texte
+    with open("pendu/mots.txt", "r") as file:
+        word = print(file.readlines()[random.randint(0, 10)])
+        print_word = str(word)
+
     running = True
     while running:
         # Fond noir
         SCREEN.fill((40,40,40))
-        pygame.display.set_caption("Hangman Game")
+        pygame.display.set_caption('Hangman Game')
         draw_text('Hangman Game', font, (255, 255, 255), SCREEN, 195, 50)
+        draw_text(print_word, font, (255, 255, 255), SCREEN, 280, 150)
         # Coordonnées souris
         mouse_x, mouse_y = pygame.mouse.get_pos()
     
@@ -105,8 +117,11 @@ def add_words():
     running = True
     while running:
         SCREEN.fill((0,0,0))
-        
         draw_text('Add words', font, (255, 255, 255), SCREEN, 20, 20)
+        word_append = "test"
+        file = open('mots.txt', 'a')
+        file.write("\n")
+        file.close()
         for event in pygame.event.get():
             if event.type == QUIT:
                 pygame.quit()
@@ -143,12 +158,15 @@ def difficulty():
         if button_1.collidepoint((mouse_x, mouse_y)):
             if click:
                 print("facile")
+                return "facile"
         if button_2.collidepoint((mouse_x, mouse_y)):
             if click:
                 print("normal")
+                return "facile"
         if button_3.collidepoint((mouse_x, mouse_y)):
             if click:
                 print("difficile")
+                return "facile"
 
         # Print les boutons, le background, le texte
         pygame.draw.rect(SCREEN, (255, 216, 39), button_menu, 0, 25)
