@@ -53,7 +53,6 @@ def main_screen():
         draw_text('Add words', font, (255, 255, 255), SCREEN, 240, 260)
         draw_text('Difficulty', font, (255, 255, 255), SCREEN, 250, 360)
 
-        click = False
         for event in pygame.event.get():
             if event.type == QUIT:
                 pygame.quit()
@@ -80,9 +79,10 @@ def hangman_game():
         print('_', end='')
 
     # Choisir un mot au hasard dans le fichier texte
-    with open("pendu/mots.txt", "r") as file:
-        word = file.readlines()[random.randint(0, 10)]
-        print_word = str(word)
+    with open("pendu/mots.txt", "r", encoding='UTF-8') as file:
+        word = file.read() # Lire tous les caractères du fichier
+        words = word.split() # String en liste
+        random_word = random.randint(0, len(words)-1) # Choisir un mot aléatoirement
 
     running = True
     while running:
@@ -90,11 +90,50 @@ def hangman_game():
         SCREEN.fill((40,40,40))
         pygame.display.set_caption('Hangman Game')
         draw_text('Hangman Game', font, (255, 255, 255), SCREEN, 195, 50)
-        draw_text(print_word, font, (255, 255, 255), SCREEN, 100, 150)
+        draw_text(words[random_word], font, (255, 255, 255), SCREEN, 100, 150)
         # Coordonnées souris
         mouse_x, mouse_y = pygame.mouse.get_pos()
     
+        click = False
+        for event in pygame.event.get():
+            if event.type == QUIT:
+                pygame.quit()
+                sys.exit()
+            if event.type == KEYDOWN:
+                # Echap = quitte le jeu
+                if event.key == K_ESCAPE:
+                    pygame.quit()
+                    sys.exit()
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                # Si clic souris alors click = True
+                if event.button == 1:
+                    click = True
  
+        pygame.display.update()
+        CLOCK.tick(FPS)
+
+# Ajout de mots
+def add_words():
+    # Choisir un mot au hasard dans le fichier texte
+    with open("pendu/mots.txt", "r") as file:
+        word = file.readlines()[random.randint(0, 11)]
+        print_word = str(word)
+        
+    click = False
+    running = True
+    while running:
+        # Fond noir
+        SCREEN.fill((40,40,40))
+        pygame.display.set_caption('Hangman Game')
+        draw_text('Hangman Game', font, (255, 255, 255), SCREEN, 195, 50)
+        # Coordonnées souris
+        draw_text('Add words', font, (255, 255, 255), SCREEN, 20, 200)
+        word_append = "test"
+        file = open('mots.txt', 'a')
+        file.write("\n")
+        file.close()
+        mouse_x, mouse_y = pygame.mouse.get_pos()
+    
         click = False
         for event in pygame.event.get():
             if event.type == QUIT:
@@ -110,27 +149,6 @@ def hangman_game():
                 if event.button == 1:
                     click = True
  
-        pygame.display.update()
-        CLOCK.tick(FPS)
-
-# Ajout de mots
-def add_words():
-    running = True
-    while running:
-        SCREEN.fill((0,0,0))
-        draw_text('Add words', font, (255, 255, 255), SCREEN, 20, 20)
-        word_append = "test"
-        file = open('mots.txt', 'a')
-        file.write("\n")
-        file.close()
-        for event in pygame.event.get():
-            if event.type == QUIT:
-                pygame.quit()
-                sys.exit()
-            if event.type == KEYDOWN:
-                if event.key == K_ESCAPE:
-                    running = False
-        
         pygame.display.update()
         CLOCK.tick(FPS)
  
@@ -163,11 +181,11 @@ def difficulty():
         if button_2.collidepoint((mouse_x, mouse_y)):
             if click:
                 print("normal")
-                return "facile"
+                return "normal"
         if button_3.collidepoint((mouse_x, mouse_y)):
             if click:
                 print("difficile")
-                return "facile"
+                return "difficile"
 
         # Print les boutons, le background, le texte
         pygame.draw.rect(SCREEN, (255, 216, 39), button_menu, 0, 25)
