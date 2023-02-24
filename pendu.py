@@ -73,16 +73,15 @@ def main_screen():
 # Le pendu
 def hangman_game():
     click = False
-    # Mettre le mot en tiret
-    test = "key"
-    for i in test:
-        print('_', end='')
 
     # Choisir un mot au hasard dans le fichier texte
     with open("pendu/mots.txt", "r", encoding='UTF-8') as file:
         word = file.read() # Lire tous les caractères du fichier
         words = word.split() # String en liste
         random_word = random.randint(0, len(words)-1) # Choisir un mot aléatoirement
+        underscore = '_ ' * len(words[random_word])
+
+    print(words[random_word])
 
     running = True
     while running:
@@ -90,7 +89,9 @@ def hangman_game():
         SCREEN.fill((40,40,40))
         pygame.display.set_caption('Hangman Game')
         draw_text('Hangman Game', font, (255, 255, 255), SCREEN, 195, 50)
-        draw_text(words[random_word], font, (255, 255, 255), SCREEN, 100, 150)
+        # Mettre le mot en tiret
+        for i in words[random_word]:
+            draw_text(underscore, font, (255, 255, 255), SCREEN, 100, 170)
         # Coordonnées souris
         mouse_x, mouse_y = pygame.mouse.get_pos()
     
@@ -177,15 +178,15 @@ def difficulty():
         if button_1.collidepoint((mouse_x, mouse_y)):
             if click:
                 print("facile")
-                return "facile"
+                main_screen()
         if button_2.collidepoint((mouse_x, mouse_y)):
             if click:
                 print("normal")
-                return "normal"
+                main_screen()
         if button_3.collidepoint((mouse_x, mouse_y)):
             if click:
                 print("difficile")
-                return "difficile"
+                main_screen()
 
         # Print les boutons, le background, le texte
         pygame.draw.rect(SCREEN, (255, 216, 39), button_menu, 0, 25)
@@ -196,7 +197,6 @@ def difficulty():
         draw_text('Easy', font, (255, 255, 255), SCREEN, 60, 260)
         draw_text('Normal', font, (255, 255, 255), SCREEN, 265, 260)
         draw_text('Hard', font, (255, 255, 255), SCREEN, 505, 260)
- 
         click = False
         for event in pygame.event.get():
             if event.type == QUIT:
